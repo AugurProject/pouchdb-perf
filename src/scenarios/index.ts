@@ -33,23 +33,23 @@ interface IEndScenarionRunAction extends Action {
   };
 }
 
-export function startScenario(id: string, scenarioId: string): ScenarioActionTypes {
+export function startScenario(id: string, scenarioId: string, timestamp: number): ScenarioActionTypes {
   return {
     payload: {
       id,
       scenario_id: scenarioId,
-      timestamp: performance.now()
+      timestamp
     },
     type: SCENARIO_RUN_START
   };
 }
 
-export function endScenario(id: string, scenarioId: string): ScenarioActionTypes {
+export function endScenario(id: string, scenarioId: string, timestamp: number): ScenarioActionTypes {
   return {
     payload: {
       id,
       scenario_id: scenarioId,
-      timestamp: performance.now()
+      timestamp
     },
     type: SCENARIO_RUN_END
   };
@@ -62,15 +62,25 @@ export type ScenarioActionTypes =
 
 export const runScenario = (scenario: IScenario): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch) => {
   const id = uuidv4();
+  const startTimestamp = performance.now();
 
-  dispatch(startScenario(id, scenario.id));
+  dispatch(startScenario(id, scenario.id, startTimestamp));
 
   await scenario.fn();
 
-  dispatch(endScenario(id, scenario.id));
+  const endTimestamp = performance.now();
+
+  dispatch(endScenario(id, scenario.id, endTimestamp));
+
+  gtag("event", "timing_complete", {
+    event_category: "scenario run",
+    name: scenario.id,
+    value: endTimestamp - startTimestamp
+  });
 };
 
 
 export const allScenarios = [
-  scenario1
+  scenario1,
+  scenario2
 ];
