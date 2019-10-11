@@ -1,0 +1,14 @@
+@media only screen and (max-width: 500px) {
+    .scenario-item {
+        flex-direction: column;
+    }
+
+    .scenario-item > .right {
+        margin-top: 10px;
+    }
+}
+
+.scenario-item {
+    display: flex;
+    justify-content: space-between;
+}
