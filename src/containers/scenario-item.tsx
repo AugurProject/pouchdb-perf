@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { ScenarioItem } from "../components/scenario-item";
 import { AppState } from "../reducers";
-import { allScenarios, IScenario, runScenario } from "../scenarios";
+import { IScenario, runScenario } from "../scenarios";
 
 // Type of the "own props"
 export interface IScenarioItemContainerProps {
@@ -28,8 +28,8 @@ const mapStateToProps = (state: AppState, { scenario }: IScenarioItemContainerPr
   };
 };
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
-  startScenario: async () => await dispatch(runScenario(allScenarios[0]))
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>, { scenario }: IScenarioItemContainerProps) => ({
+  startScenario: async () => await dispatch(runScenario(scenario))
 });
 
 export const ScenarioItemContainer = connect(

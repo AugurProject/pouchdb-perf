@@ -3,7 +3,7 @@ import { Action } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { v4 as uuidv4 } from "uuid";
 import { AppState } from "../reducers";
-import { scenario1 } from "./single-db-bulkinsert";
+import { scenario1, scenario2 } from "./scenarios";
 
 export const SCENARIO_RUN_START = "SCENARIO_RUN_START";
 export const SCENARIO_RUN_END = "SCENARIO_RUN_END";

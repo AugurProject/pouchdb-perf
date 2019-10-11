@@ -1,5 +1,18 @@
 /* tslint:disable */
-export const testData:any[] = [
+export const eventNames = [
+  "UniverseCreated",
+  "TokensMinted",
+  "TokenBalanceChanged",
+  "DisputeWindowCreated",
+  "TokensTransferred",
+  "MarketCreated",
+  "ProfitLossChanged",
+  "OrderEvent",
+  "MarketOIChanged",
+  "MarketVolumeChanged",
+  "TokensBurned"];
+
+export const testData: any[] = [
   {
     "name": "UniverseCreated",
     "parentUniverse": "0x0000000000000000000000000000000000000000",
@@ -102728,4 +102741,4 @@ export const testData:any[] = [
       "0x0000000000000000000000000000000000000000000000000000000000000000"
     ]
   }
-]
+];
