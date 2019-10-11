@@ -18,8 +18,7 @@ export interface IScenarioItemProps {
 export const ScenarioItem = ({ description, isRunning, name, runHistory, startScenario }: IScenarioItemProps) => (
   <Card className="scenario-item" interactive={true} elevation={Elevation.ZERO}>
     <div className="left">
-      <h5>{name}</h5>
-      <p>{description}</p>
+      <p>{name}: {description}</p>
       <Button disabled={isRunning} onClick={startScenario}>Run</Button>
     </div>
     <div className="right">

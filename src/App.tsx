@@ -1,9 +1,10 @@
-import { Button, ButtonGroup, Card, Elevation, Intent, Navbar } from "@blueprintjs/core";
+import { Button, ButtonGroup, Callout, Card, Elevation, Intent, Navbar } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import { Alignment } from "@blueprintjs/core/lib/esm/common/alignment";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import PouchDB from "pouchdb";
 import * as React from "react";
+import UAParser from "ua-parser-js";
 
 import "./App.css";
 import { ScenarioListing } from "./components/scenario-listing";
@@ -35,6 +36,8 @@ class App extends React.Component<{ runAllScenarios: () => void, isRunning: bool
   };
 
   public render() {
+    const parser = new UAParser(navigator.userAgent);
+
     return (
       <div className="App">
         <Navbar>
@@ -51,6 +54,12 @@ class App extends React.Component<{ runAllScenarios: () => void, isRunning: bool
               debug</Button>
           </ButtonGroup>
         </Card>
+        <Callout>
+          <div>OS: {JSON.stringify(parser.getOS())}</div>
+          <div>Browser: {JSON.stringify(parser.getBrowser())}</div>
+          <div>Device: {JSON.stringify(parser.getDevice())}</div>
+          <div>CPU: {JSON.stringify(parser.getCPU())}</div>
+        </Callout>
         <ScenarioListing allScenarios={allScenarios}/>
       </div>
     );
