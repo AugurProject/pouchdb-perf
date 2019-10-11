@@ -18,8 +18,8 @@ export const ScenarioItem = ({ description, isRunning, name, runHistory, startSc
   <Card interactive={true} elevation={Elevation.ZERO}>
     <h5>{name}</h5>
     <p>{description}</p>
-    <Button active={isRunning} onClick={startScenario}>Submit</Button>
-    
+    <Button disabled={isRunning} onClick={startScenario}>Submit</Button>
+
     {runHistory.map((rh) => <div key={rh.id}>{rh.duration}</div>)}
   </Card>
 );
