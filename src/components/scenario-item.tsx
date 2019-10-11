@@ -20,7 +20,7 @@ export const ScenarioItem = ({ description, isRunning, name, runHistory, startSc
     <div className="left">
       <h5>{name}</h5>
       <p>{description}</p>
-      <Button disabled={isRunning} onClick={startScenario}>Submit</Button>
+      <Button disabled={isRunning} onClick={startScenario}>Run</Button>
     </div>
     <div className="right">
       <table
