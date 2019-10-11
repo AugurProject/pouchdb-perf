@@ -37,8 +37,7 @@ export const scenario2: IScenario = {
     for (const eventName of eventNames) {
       await dbs[eventName].bulkDocs(testData.filter((item) => item.name === eventName));
     }
-  }
-  ,
+  },
   id: "SCENARIO_2",
   name: "Scenario 2"
 };

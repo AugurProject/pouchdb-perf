@@ -1,4 +1,4 @@
-import { Button, Intent, Navbar } from "@blueprintjs/core";
+import { Button, ButtonGroup, Intent, Navbar } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import { Alignment } from "@blueprintjs/core/lib/esm/common/alignment";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -13,8 +13,8 @@ interface IAppState {
   isPouchDBDebugOn: boolean;
 }
 
-class App extends React.Component<{}, IAppState> {
-  constructor(props: {}) {
+class App extends React.Component<{ runAllScenarios: () => void, isRunning: boolean }, IAppState> {
+  constructor(props: { runAllScenarios: () => void, isRunning: boolean }) {
     super(props);
     this.state = { isPouchDBDebugOn: localStorage.getItem("debug") === "*" };
   }
@@ -43,11 +43,16 @@ class App extends React.Component<{}, IAppState> {
             <Navbar.Divider/>
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
-            <Button fill={true} intent={this.state.isPouchDBDebugOn ? Intent.SUCCESS : Intent.DANGER}
-                    onClick={this.togglePouchDBDebug}>{this.state.isPouchDBDebugOn ? "Disable" : "Enable"} PouchDB
-              debug</Button>
+            <ButtonGroup style={{ minWidth: 200 }}>
+              <Button onClick={this.props.runAllScenarios} disabled={this.props.isRunning}>Run All</Button>
+              <Button fill={true} intent={this.state.isPouchDBDebugOn ? Intent.SUCCESS : Intent.DANGER}
+                      onClick={this.togglePouchDBDebug}>{this.state.isPouchDBDebugOn ? "Disable" : "Enable"} PouchDB
+                debug</Button>
+            </ButtonGroup>
           </Navbar.Group>
         </Navbar>
+
+
         <ScenarioListing allScenarios={allScenarios}/>
       </div>
     );

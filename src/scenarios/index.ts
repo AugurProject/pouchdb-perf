@@ -60,6 +60,11 @@ export type ScenarioActionTypes =
   | IStartScenarionRunAction
   | IEndScenarionRunAction;
 
+export const allScenarios = [
+  scenario1,
+  scenario2
+];
+
 export const runScenario = (scenario: IScenario): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch) => {
   const id = uuidv4();
   const startTimestamp = performance.now();
@@ -79,8 +84,8 @@ export const runScenario = (scenario: IScenario): ThunkAction<Promise<void>, App
   });
 };
 
-
-export const allScenarios = [
-  scenario1,
-  scenario2
-];
+export const runAllScenarios = (): ThunkAction<Promise<void>, AppState, null, Action<string>> => async (dispatch, getState, extraArgument) => {
+  for (const scenario of allScenarios) {
+    await runScenario(scenario)(dispatch, getState, extraArgument);
+  }
+};

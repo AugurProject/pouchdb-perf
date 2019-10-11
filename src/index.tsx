@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
-import App from "./App";
+import { AppContainer } from "./containers/app";
 import "./index.css";
 import { rootReducer } from "./reducers";
 import registerServiceWorker from "./registerServiceWorker";
@@ -25,7 +25,7 @@ PouchDB.plugin(pouchdbFind);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <AppContainer/>
   </Provider>,
   document.getElementById("root") as HTMLElement
 );
