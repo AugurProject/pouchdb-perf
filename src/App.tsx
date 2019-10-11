@@ -10,25 +10,26 @@ import { ScenarioListing } from "./components/scenario-listing";
 import { allScenarios } from "./scenarios";
 
 interface IAppState {
-  isPouchDBDebug: boolean;
+  isPouchDBDebugOn: boolean;
 }
 
 class App extends React.Component<{}, IAppState> {
   constructor(props: {}) {
     super(props);
-    this.state = { isPouchDBDebug: false };
+    this.state = { isPouchDBDebugOn: localStorage.getItem("debug") === "*" };
   }
 
   public togglePouchDBDebug = () => {
-    if (this.state.isPouchDBDebug) {
+    // This will re-coordinate with the window state
+    if (localStorage.getItem("debug") === "*") {
       PouchDB.debug.disable();
       this.setState({
-        isPouchDBDebug: false
+        isPouchDBDebugOn: false
       });
     } else {
       PouchDB.debug.enable("*");
       this.setState({
-        isPouchDBDebug: true
+        isPouchDBDebugOn: true
       });
     }
   };
@@ -42,8 +43,8 @@ class App extends React.Component<{}, IAppState> {
             <Navbar.Divider/>
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
-            <Button fill={true} intent={this.state.isPouchDBDebug ? Intent.SUCCESS : Intent.DANGER}
-                    onClick={this.togglePouchDBDebug}>{this.state.isPouchDBDebug ? "Enable" : "Disable"} PouchDB
+            <Button fill={true} intent={this.state.isPouchDBDebugOn ? Intent.SUCCESS : Intent.DANGER}
+                    onClick={this.togglePouchDBDebug}>{this.state.isPouchDBDebugOn ? "Disable" : "Enable"} PouchDB
               debug</Button>
           </Navbar.Group>
         </Navbar>
