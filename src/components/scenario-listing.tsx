@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ScenarioItemContainer } from "../containers/scenario-item";
-import { IScenario } from "../scenarios";
+import { Scenario } from "../scenarios";
 
 interface IScenarioListingProps {
-  allScenarios: IScenario[];
+  allScenarios: Scenario[];
 }
 
 export const ScenarioListing = ({ allScenarios }: IScenarioListingProps) => (<div>
