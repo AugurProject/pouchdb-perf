@@ -1,7 +1,10 @@
 import Dexie from "dexie";
 import PouchDB from "pouchdb";
+import MemoryAdapter from "pouchdb-adapter-memory";
 import { v4 as uuidv4 } from "uuid";
 import { eventNames, testData } from "../kovan.test6";
+
+PouchDB.plugin(MemoryAdapter);
 
 export class Scenario {
   public readonly id: string = "";
@@ -59,7 +62,6 @@ export class Scenario1 extends Scenario {
       await this.dbs.somedb.bulkDocs(testData);
     });
 
-    /*
     await this.timeify("Create Indexes", async () => {
       await this.dbs.somedb.createIndex({
         index: {
@@ -67,7 +69,32 @@ export class Scenario1 extends Scenario {
         }
       });
     });
-    */
+  }
+};
+
+export class Scenario2 extends Scenario {
+  public readonly description = "Single DB, Single Index, UUID. Memory"
+  public readonly id = "SCENARIO_2";
+
+  public async run() {
+    await this.timeify("Make all databases", async () => {
+      this.dbs.somedb  = new PouchDB(`${uuidv4()}/somedb`, {
+        adapter: 'memory',
+        deterministic_revs: false
+      });
+    });
+
+    await this.timeify("Add Docs", async () => {
+      await this.dbs.somedb.bulkDocs(testData);
+    });
+
+    await this.timeify("Create Indexes", async () => {
+      await this.dbs.somedb.createIndex({
+        index: {
+          fields: ["name"]
+        }
+      });
+    });
   }
 };
 
@@ -209,6 +236,7 @@ export class Scenario4 extends Scenario {
 
 export const allScenarios = [
   new Scenario1,
+  new Scenario2,
   new Scenario8
 ];
 
