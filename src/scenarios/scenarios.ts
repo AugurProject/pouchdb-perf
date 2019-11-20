@@ -1,3 +1,4 @@
+import Dexie from "dexie";
 import PouchDB from "pouchdb";
 import { v4 as uuidv4 } from "uuid";
 import { eventNames, testData } from "../kovan.test6";
@@ -44,24 +45,56 @@ export class Scenario {
 }
 
 export class Scenario1 extends Scenario {
-  public readonly description = "Single DB, Index, MD5"
+  public readonly description = "Single DB, Single Index, UUID"
   public readonly id = "SCENARIO_1";
 
   public async run() {
-    const db = this.dbs.somedb  = new PouchDB(`${uuidv4()}/somedb`);
-
-    await db.createIndex({
-      index: {
-        fields: ["name"]
-      }
+    await this.timeify("Make all databases", async () => {
+      this.dbs.somedb  = new PouchDB(`${uuidv4()}/somedb`, {
+        deterministic_revs: false
+      });
     });
 
-    await db.bulkDocs(testData);
+    await this.timeify("Add Docs", async () => {
+      await this.dbs.somedb.bulkDocs(testData);
+    });
+
+    /*
+    await this.timeify("Create Indexes", async () => {
+      await this.dbs.somedb.createIndex({
+        index: {
+          fields: ["name"]
+        }
+      });
+    });
+    */
   }
 };
 
+class Scenario8 extends Scenario {
+  public readonly description = "Dexie"
+  public readonly id = "Scenario8";
+
+  public async run() {
+    let dexieDB: Dexie;
+    const dbName = `${uuidv4()}/somedb`;
+    await this.timeify("Make all databases", async () => {
+      dexieDB = new Dexie(dbName);
+      dexieDB.version(1).stores({
+        [dbName]: 'name'
+      });
+    });
+
+    await this.timeify("Insert all docs", async () => {
+      await dexieDB.open();
+      await dexieDB[dbName].bulkPut(testData);
+    });
+  }
+}
+
+/*
 class Scenario5 extends Scenario {
-  public readonly description = "Single DB, Index, MD5"
+  public readonly description = "Single DB, UUID"
   public readonly id = "SCENARIO_5";
 
   public async run() {
@@ -78,7 +111,7 @@ class Scenario5 extends Scenario {
 };;
 
 export class Scenario2 extends Scenario {
-  public readonly description = "Multiple DB, Index, MD5"
+  public readonly description = "Multiple DB, UUID"
   public readonly id = "SCENARIO_2";
   public async run() {
     await this.timeify("Make all databases", async () => {
@@ -89,27 +122,24 @@ export class Scenario2 extends Scenario {
       }
     });
 
-    let time = 0;
-    for (const eventName of eventNames) {
-      const items = this.eventsByName[eventName];
-      console.log(items.length)
-      const start = performance.now();
-      await this.dbs[eventName].bulkDocs(items);
-      const end = performance.now();
-      this.log(`Insert ${eventName} in ${end-start}ms`)
-      time += (end - start);
-    }
-    this.log(`Insert all docs in ${time}ms`);
+    await this.timeify("Insert all docs", async () => {
+      for (const eventName of eventNames) {
+        const items = this.eventsByName[eventName];
+        await this.dbs[eventName].bulkDocs(items);
+      }
+    });
   }
 };
 
 export class Scenario3 extends Scenario {
-  public readonly description = "Single DB, No Index, UUID";
+  public readonly description = "Single DB, Multiple Index, UUID";
   public readonly id = "SCENARIO_3";
 
   public async run() {
-    const db = this.dbs.somedb  = new PouchDB(`${uuidv4()}/somedb`, {
-      deterministic_revs: false
+    await this.timeify("Make all databases", async () => {
+      this.dbs.somedb  = new PouchDB(`${uuidv4()}/somedb`, {
+        deterministic_revs: false
+      });
     });
 
     const fields = [
@@ -129,45 +159,56 @@ export class Scenario3 extends Scenario {
       "transactionHash",
     ];
     
-    await db.bulkDocs(testData);
-    for (const field of fields) {
-      await db.createIndex({
-        index: {
-          fields: [field]
-        }
-      });
-    }
+    await this.timeify("Insert all docs", async () => {
+      await this.dbs.somedb.bulkDocs(testData);
+    });
+
+    await this.timeify("Create Indexes", async () => {
+      for (const field of fields) {
+        await this.dbs.somedb.createIndex({
+          index: {
+            fields: [field]
+          }
+        });
+      }
+    });
 
   }
 };
+*/
 
 export class Scenario4 extends Scenario {
-  public readonly description = "Multiple DB, No Index, UUID"
+  public readonly description = "Multiple DB, Single Index, UUID"
   public readonly id = "SCENARIO_4";
   public async run() {
-    for (const eventName of eventNames) {
-      this.dbs[eventName] = new PouchDB(`${uuidv4()}/${eventName}`, {
-        deterministic_revs: false
-      });
-    }
+    await this.timeify("Make all databases", async () => {
+      for (const eventName of eventNames) {
+        this.dbs[eventName] = new PouchDB(`${uuidv4()}/${eventName}`, {
+          deterministic_revs: false
+        });
+      }
+    });
 
-    for (const eventName of eventNames) {
-      await this.dbs[eventName].bulkDocs(testData.filter((item) => item.name === eventName));
-    }
+    await this.timeify("Insert all docs", async () => {
+      for (const eventName of eventNames) {
+        await this.dbs[eventName].bulkDocs(testData.filter((item) => item.name === eventName));
+      }
+    });
 
-    for (const eventName of eventNames) {
-      await this.dbs[eventName].createIndex({
-        index: {
-          fields: ["name"]
-        }
-      });
-    }
+    await this.timeify("Create Indexes", async () => {
+      for (const eventName of eventNames) {
+        await this.dbs[eventName].createIndex({
+          index: {
+            fields: ["name"]
+          }
+        });
+      }
+    });
   }
 };
 
-
 export const allScenarios = [
-  new Scenario2,
-  new Scenario5,
+  new Scenario1,
+  new Scenario8
 ];
 
