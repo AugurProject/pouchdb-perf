@@ -50,7 +50,7 @@
     "tslint": "^5.7.0",
     "tslint-config-prettier": "^1.10.0",
     "tslint-react": "^3.2.0",
-    "ua-parser-js": "^0.7.20",
+    "ua-parser-js": "^0.7.24",
     "uglifyjs-webpack-plugin": "1.2.5",
     "url-loader": "0.6.2",
     "uuid": "^3.3.3",
